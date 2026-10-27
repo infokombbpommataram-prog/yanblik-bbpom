@@ -13,12 +13,11 @@ async function gasPost(body){
 function renderQuota(q){
   const el = document.getElementById('quotaBadge');
   const btn = document.getElementById('btnAnalyze');
-  el.textContent = `Kuota: ${q.rpmUsed}/${q.rpmLimit}/mnt • ${q.rpdUsed}/${q.rpdLimit}/hari`;
+  el.innerHTML = 'Kuota AI: <b>'+q.rpmUsed+'/'+q.rpmLimit+'/mnt • '+q.rpdUsed+'/'+q.rpdLimit+'/hari</b>';
   const empty = q.rpmLeft === 0 || q.rpdLeft === 0;
-  el.className = empty ? 'quota-low' : 'quota-ok';
   btn.disabled = empty;
-  if (empty) btn.textContent = q.rpdLeft === 0 ? '⛔ Kuota harian habis — pakai Isi Manual' : '⛔ Kuota menit habis — coba lagi sebentar';
-  else btn.textContent = '✨ Analisis & Ekstrak Data';
+  if (empty) btn.textContent = q.rpdLeft === 0 ? 'Kuota harian habis — pakai isi manual' : 'Kuota menit habis — coba lagi sebentar';
+  else btn.textContent = 'Analisis transkrip';
 }
 
 async function refreshQuota(){
@@ -38,7 +37,7 @@ async function processAnalysis(){
     if (j.quota) renderQuota(j.quota);
     if (!j.ok && j.error === 'quota') {
       hideLoading();
-      alert(j.reason === 'rpd' ? 'Kuota harian habis (20/20). Pakai tombol Isi Manual.' : `Kuota menit habis. Coba lagi ${j.retryAfterSec||60} detik.`);
+      alert(j.reason === 'rpd' ? 'Kuota harian habis (20/20). Pakai tombol isi manual.' : `Kuota menit habis. Coba lagi ${j.retryAfterSec||60} detik.`);
       return;
     }
     if (!j.ok) throw new Error(j.error || 'Gagal analisis');

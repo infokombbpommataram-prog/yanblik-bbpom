@@ -9,6 +9,7 @@
   <!-- Tailwind CSS & FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="theme.css">
   
   <!-- Chart.js & Chart.js DataLabels Plugin -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -53,30 +54,15 @@
 <body class="bg-gray-50 text-gray-800 font-sans leading-normal min-h-screen relative">
 
   <!-- Header Section -->
-  <header class="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 text-white shadow-lg">
-    <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div class="flex items-center space-x-4">
-        <div class="bg-white p-2 rounded-lg shadow-inner">
-          <i class="fa-solid fa-chart-line text-blue-800 text-3xl"></i>
-        </div>
-        <div>
-          <h1 class="text-xl md:text-2xl font-extrabold tracking-wide">Monitoring & Evaluasi Layanan Informasi & Pengaduan</h1>
-          <p class="text-xs md:text-sm text-blue-100 font-light flex items-center gap-1">
-            <i class="fa-solid fa-building"></i> Balai Besar POM di Mataram
-          </p>
-        </div>
-      </div>
-      <div id="connectionStatus" class="px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 bg-yellow-500 text-white shadow">
-        <i class="fa-solid fa-circle-nodes animate-pulse"></i>
-        <span id="statusText">Menghubungkan Data...</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <a href="home.html" class="bg-white text-blue-800 px-4 py-1.5 rounded-full text-xs font-bold shadow hover:bg-blue-50">Beranda</a>
-        <a href="index.html" class="bg-white text-blue-800 px-4 py-1.5 rounded-full text-xs font-bold shadow hover:bg-blue-50">Extractor</a>
-        <button onclick="logout()" class="bg-red-500 px-4 py-1.5 rounded-full text-xs font-bold shadow hover:bg-red-600">Keluar</button>
-      </div>
-    </div>
-  </header>
+  <div class="r-nav">
+    <a class="brand" href="home.html">Yanblik</a>
+    <div class="links"><a href="home.html">Beranda</a><a href="index.html">Input</a><a class="cur" href="monitoring.html">Monitoring</a><button onclick="logout()">Keluar</button></div>
+  </div>
+  <div class="r-wrap" style="padding-bottom:6px">
+    <h1 style="font-size:34px">Monitoring layanan.</h1>
+    <p class="ui" style="font-size:15px;color:#6b6966;margin-top:6px">Tren, proporsi, dan register lengkap dari data terbaru.</p>
+    <p class="ui" style="font-size:13px;color:#a09d98;margin-top:8px"><span id="statusText">Menghubungkan data…</span></p>
+  </div>
 
   <main class="container mx-auto px-4 md:px-6 py-6 space-y-6">
 
@@ -84,10 +70,10 @@
     <section class="glass-card rounded-2xl shadow-sm p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-gray-100 pb-3">
         <h2 class="text-md font-bold text-gray-700 flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-blue-600"></i> Panel Filter & Pencarian
+          Panel Filter & Pencarian
         </h2>
         <button onclick="resetSemuaFilter()" class="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1">
-          <i class="fa-solid fa-rotate-left"></i> Reset Filter
+          Reset Filter
         </button>
       </div>
       
@@ -97,8 +83,7 @@
           <div class="relative">
             <input type="text" id="searchKey" oninput="aplikasikanFilter()" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 pl-9 pr-4 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Cari isi layanan, alamat, komoditas...">
             <span class="absolute left-3 top-2.5 text-gray-400 text-sm">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
+              </span>
           </div>
         </div>
 
@@ -137,7 +122,7 @@
           <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Layanan</p>
           <h3 id="txtTotalLayanan" class="text-2xl md:text-3xl font-extrabold text-blue-900 mt-1">0</h3>
         </div>
-        <div class="bg-blue-100 text-blue-700 p-3.5 rounded-xl"><i class="fa-solid fa-list-check text-xl"></i></div>
+        <div class="bg-blue-100 text-blue-700 p-3.5 rounded-xl"></div>
       </div>
       
       <div class="glass-card p-5 rounded-2xl flex items-center justify-between shadow-sm">
@@ -145,7 +130,7 @@
           <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Layanan Informasi</p>
           <h3 id="txtTotalInformasi" class="text-2xl md:text-3xl font-extrabold text-indigo-900 mt-1">0</h3>
         </div>
-        <div class="bg-indigo-100 text-indigo-700 p-3.5 rounded-xl"><i class="fa-solid fa-circle-info text-xl"></i></div>
+        <div class="bg-indigo-100 text-indigo-700 p-3.5 rounded-xl"></div>
       </div>
 
       <div class="glass-card p-5 rounded-2xl flex items-center justify-between shadow-sm">
@@ -153,7 +138,7 @@
           <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pengaduan Masuk</p>
           <h3 id="txtTotalPengaduan" class="text-2xl md:text-3xl font-extrabold text-red-900 mt-1">0</h3>
         </div>
-        <div class="bg-red-100 text-red-700 p-3.5 rounded-xl"><i class="fa-solid fa-triangle-exclamation text-xl"></i></div>
+        <div class="bg-red-100 text-red-700 p-3.5 rounded-xl"></div>
       </div>
 
       <div class="glass-card p-5 rounded-2xl flex items-center justify-between shadow-sm">
@@ -161,14 +146,14 @@
           <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Rasio Pengaduan</p>
           <h3 id="txtRasioLayanan" class="text-2xl md:text-3xl font-extrabold text-teal-950 mt-1">0%</h3>
         </div>
-        <div class="bg-teal-100 text-teal-700 p-3.5 rounded-xl"><i class="fa-solid fa-percent text-xl"></i></div>
+        <div class="bg-teal-100 text-teal-700 p-3.5 rounded-xl"></div>
       </div>
     </section>
 
     <!-- Trend Monthly Chart Section -->
     <section class="glass-card rounded-2xl shadow-sm p-6">
       <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 flex items-center gap-2">
-        <i class="fa-solid fa-chart-area text-blue-600"></i> Tren Distribusi Layanan Berdasarkan Bulan
+        Tren Distribusi Layanan Berdasarkan Bulan
       </h3>
       <div class="relative w-full" style="height: 300px;">
         <canvas id="chartBulanan"></canvas>
@@ -180,7 +165,7 @@
       <!-- 1. Komoditi -->
       <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-          <i class="fa-solid fa-box-open text-blue-600"></i> Proporsi Komoditas
+          Proporsi Komoditas
         </h4>
         <div class="chart-container-fixed">
           <canvas id="chartKomoditas"></canvas>
@@ -190,7 +175,7 @@
       <!-- 2. Klasifikasi -->
       <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-          <i class="fa-solid fa-tags text-indigo-600"></i> Klasifikasi Layanan
+          Klasifikasi Layanan
         </h4>
         <div class="chart-container-fixed">
           <canvas id="chartKlasifikasi"></canvas>
@@ -200,7 +185,7 @@
       <!-- 3. Jenis Kelamin -->
       <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-          <i class="fa-solid fa-venus-mars text-pink-600"></i> Profil Jenis Kelamin
+          Profil Jenis Kelamin
         </h4>
         <div class="chart-container-fixed">
           <canvas id="chartGender"></canvas>
@@ -210,7 +195,7 @@
       <!-- 4. Pekerjaan -->
       <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between lg:col-span-2">
         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-          <i class="fa-solid fa-briefcase text-yellow-600"></i> Profil Pekerjaan Pelapor
+          Profil Pekerjaan Pelapor
         </h4>
         <div class="chart-container-fixed" style="height: 280px;">
           <canvas id="chartPekerjaan"></canvas>
@@ -220,7 +205,7 @@
       <!-- 5. Sarana -->
       <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-          <i class="fa-solid fa-paper-plane text-teal-600"></i> Sarana / Media Layanan
+          Sarana / Media Layanan
         </h4>
         <div class="chart-container-fixed">
           <canvas id="chartSarana"></canvas>
@@ -233,7 +218,7 @@
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
         <div>
           <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-table text-blue-600"></i> Register Detail Layanan (Data Teranonymisasi)
+            Register Detail Layanan (Data Teranonymisasi)
           </h3>
           <p class="text-xs text-gray-400 mt-1">Gunakan tombol 'Detail' pada ujung kolom kanan untuk melihat isi narasi lengkap.</p>
         </div>
@@ -287,15 +272,13 @@
       
       <div class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white px-5 py-3.5 flex justify-between items-center flex-shrink-0">
         <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-folder-open text-lg text-blue-200"></i>
           <div>
             <h3 class="text-xs font-bold tracking-wide" id="modalRegId">REG/ID/000</h3>
             <p class="text-[10px] text-blue-200 font-light">Detail Transaksi Log Layanan</p>
           </div>
         </div>
         <button onclick="tutupModal()" class="text-white hover:text-gray-200 text-md transition focus:outline-none">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+          </button>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-4 custom-scrollbar text-xs flex-grow" style="max-height: calc(85vh - 110px);">
@@ -339,7 +322,7 @@
 
         <div class="border-t border-gray-100 pt-3">
           <h4 class="text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center gap-1">
-            <i class="fa-solid fa-id-card text-gray-400"></i> Profil Demografi (Anonim)
+            Profil Demografi (Anonim)
           </h4>
           <div class="grid grid-cols-2 gap-2 text-[11px]">
             <div class="bg-gray-50 p-2 rounded-lg flex justify-between">
@@ -418,10 +401,10 @@
       const el = document.getElementById("connectionStatus");
       const text = document.getElementById("statusText");
       if (isReal) {
-        el.className = "px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 bg-green-500 text-white shadow";
+        el.className = "";
         text.innerText = message;
       } else {
-        el.className = "px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 bg-yellow-500 text-white shadow";
+        el.className = "";
         text.innerText = message;
       }
     }
@@ -595,7 +578,7 @@
           <td class="px-4 py-3 max-w-xs truncate text-gray-500" title="${item["Isu/Topik"] || ''}">${item["Isu/Topik"] || '-'}</td>
           <td class="px-4 py-3 whitespace-nowrap text-gray-700">${item["Klasifikasi"] || '-'}</td>
           <td class="px-4 py-3 whitespace-nowrap text-gray-500">${item["Subklasifikasi"] || '-'}</td>
-          <td class="px-4 py-3 whitespace-nowrap"><i class="fa-solid fa-square-rss text-teal-500 mr-1"></i>${item["Sarana"] || '-'}</td>
+          <td class="px-4 py-3 whitespace-nowrap">${item["Sarana"] || '-'}</td>
           <td class="px-4 py-3 whitespace-nowrap text-gray-600">${item["Pekerjaan"] || '-'}</td>
           <td class="px-4 py-3 text-center">
             <span class="px-1.5 py-0.5 rounded text-xs font-semibold ${
@@ -606,7 +589,7 @@
           </td>
           <td class="px-4 py-2 text-center whitespace-nowrap bg-blue-50 bg-opacity-40">
             <button onclick="bukaModal(${realDataIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg text-xxs transition shadow-sm hover:shadow flex items-center gap-1 mx-auto focus:outline-none">
-              <i class="fa-solid fa-eye text-xxs"></i> Detail
+              Detail
             </button>
           </td>
         `;
@@ -676,7 +659,7 @@
       btnPrev.disabled = currentPage === 1;
       btnPrev.className = "px-2 py-1.5 rounded-lg border border-gray-200 text-xs font-bold transition flex items-center " + 
         (currentPage === 1 ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white text-gray-600 hover:bg-gray-50");
-      btnPrev.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
+      btnPrev.innerHTML = ``;
       btnPrev.onclick = function() {
         if (currentPage > 1) {
           currentPage--;
@@ -707,7 +690,7 @@
       btnNext.disabled = currentPage === totalPages;
       btnNext.className = "px-2 py-1.5 rounded-lg border border-gray-200 text-xs font-bold transition flex items-center " + 
         (currentPage === totalPages ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white text-gray-600 hover:bg-gray-50");
-      btnNext.innerHTML = `<i class="fa-solid fa-chevron-right"></i>`;
+      btnNext.innerHTML = ``;
       btnNext.onclick = function() {
         if (currentPage < totalPages) {
           currentPage++;

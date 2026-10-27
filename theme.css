@@ -1,0 +1,35 @@
+/* Yanblik — tema Reflect: tenang, serif, fokus hari ini. */
+:root{
+  --bg:#faf9f7; --card:#ffffff; --ink:#2b2a28;
+  --muted:#6b6966; --faint:#a09d98; --line:#e8e4de;
+  --hot:#c25e3a; --dark:#2b2a28;
+}
+*{box-sizing:border-box}
+body{background:var(--bg)!important;color:var(--ink)!important}
+h1,h2,h3,.serif{font-family:'Newsreader',Georgia,'Times New Roman',serif!important;font-weight:500;letter-spacing:-.5px}
+.ui,.top nav,.r-nav,button,input,select,textarea,label,.metric-l,.sub,.err,.foot{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+/* Navigasi Reflect */
+.r-nav{max-width:1024px;margin:0 auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.r-nav .brand{font-family:'Newsreader',Georgia,serif;font-size:16px;font-weight:600;color:var(--ink);text-decoration:none}
+.r-nav .links{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.r-nav .links a,.r-nav .links button{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 13px;border-radius:8px;border:1px solid transparent;background:transparent;cursor:pointer}
+.r-nav .links a.cur{background:var(--dark);color:#faf9f7}
+.r-nav .links button{border-color:var(--line)}
+/* Kartu */
+.r-card{background:var(--card)!important;border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:0 4px 24px rgba(0,0,0,.04)!important}
+.r-wrap{max-width:860px;margin:0 auto;padding:28px 28px 60px}
+/* Tombol */
+.btn-dark{background:var(--dark)!important;border-color:var(--dark)!important;color:#faf9f7!important}
+.btn-line{background:#fff!important;border:1px solid var(--line)!important;color:var(--ink)!important}
+/* Override Bootstrap */
+.btn-primary{background:var(--dark)!important;border-color:var(--dark)!important}
+.btn-success{background:var(--dark)!important;border-color:var(--dark)!important}
+.card{border-color:var(--line)!important;box-shadow:0 4px 24px rgba(0,0,0,.04)!important;border-radius:14px!important}
+.section-header{color:var(--ink)!important;border-color:var(--line)!important;font-family:'Newsreader',Georgia,serif!important;font-size:17px!important;font-weight:600!important}
+.form-label{color:var(--muted)!important;font-family:-apple-system,'Segoe UI',sans-serif!important;font-size:12px!important}
+/* Override Tailwind monitoring */
+.glass-card{background:#fff!important;border:1px solid var(--line)!important;box-shadow:0 4px 24px rgba(0,0,0,.04)!important}
+header.bg-gradient-to-r{background:var(--bg)!important}
+header .text-blue-100,header p{color:var(--muted)!important}
+header h1{color:var(--ink)!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}

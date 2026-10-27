@@ -3,43 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Yanblik BBPOM - Extractor Transkrip</title>
+<title>Input - Yanblik BBPOM</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
 <style>
-body{font-family:'Segoe UI',Roboto,sans-serif;padding:20px;background:#f4f6f9;font-size:12px}
-.container-box{max-width:950px;margin:0 auto}
-.card{border-radius:8px;border:1px solid #e0e0e0;box-shadow:0 2px 4px rgba(0,0,0,.04);margin-bottom:15px}
-.section-header{font-weight:700;color:#0d6efd;border-bottom:2px solid #e9ecef;padding-bottom:5px;margin-bottom:10px;font-size:13px}
-.form-label{font-weight:600;color:#495057;margin-bottom:2px}
-.form-control-sm{font-size:12px}
-.badge-bpom{background:#008080;color:#fff;font-size:11px;padding:4px 8px;border-radius:4px}
-.quota-ok{background:#198754;color:#fff;font-size:11px;padding:4px 8px;border-radius:4px}
-.quota-low{background:#dc3545;color:#fff;font-size:11px;padding:4px 8px;border-radius:4px}
+body{padding:0;font-size:14px}
+.container-box{max-width:860px;margin:0 auto;padding:28px 28px 60px}
+.page-h{font-size:34px;margin:26px 0 6px}
+.page-s{font-size:15px;color:var(--muted);margin-bottom:22px}
+.quota-line{font-size:13px;color:var(--muted);margin-bottom:18px}
+.quota-line b{color:var(--ink)}
+textarea.form-control{font-size:14px}
+.form-control-sm{font-size:13px}
+.note{font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
+<div class="r-nav">
+  <a class="brand" href="home.html">Yanblik</a>
+  <div class="links"><a href="home.html">Beranda</a><a class="cur" href="index.html">Input</a><a href="monitoring.html">Monitoring</a><button onclick="logout()">Keluar</button></div>
+</div>
 <div class="container-box">
-  <div class="d-flex align-items-center justify-content-between mb-3 bg-white p-3 rounded shadow-sm flex-wrap gap-2">
-    <div>
-      <h5 class="mb-0 fw-bold text-dark">🤖 AI Yanblik BBPOM di Mataram</h5>
-      <small class="text-muted">Ekstraksi Otomatis Transkrip Pengaduan (53 Kolom Standar)</small>
-    </div>
-    <div class="d-flex gap-2 align-items-center flex-wrap">
-      <a href="home.html" class="btn btn-sm btn-outline-secondary">Beranda</a>
-      <a href="monitoring.html" class="btn btn-sm btn-outline-primary">📊 Monitoring</a>
-      <span id="quotaBadge" class="quota-ok">Kuota: …</span>
-      <span class="badge-bpom">Gemini 3.8 Flash</span>
-      <button class="btn btn-sm btn-outline-secondary" onclick="logout()">Keluar</button>
-    </div>
-  </div>
+  <h1 class="page-h">Input transkrip.</h1>
+  <p class="page-s">Tempel percakapan WA di bawah. AI mengekstrak 53 kolom, Anda periksa, lalu simpan.</p>
+  <p class="quota-line" id="quotaBadge">Kuota: …</p>
 
   <div id="stepInput">
     <div class="card p-3 bg-white">
-      <h6 class="fw-bold text-primary mb-2">1. Tempelkan Transkrip WA / Percakapan</h6>
+      <h6 class="fw-semibold mb-2" style="font-size:15px">Tempelkan transkrip WA</h6>
       <textarea id="transcriptInput" class="form-control" rows="10" placeholder="Tempel transkrip percakapan WA di sini..."></textarea>
     </div>
-    <button id="btnAnalyze" class="btn btn-primary w-100 py-2 fw-semibold" onclick="processAnalysis()">✨ Analisis &amp; Ekstrak Data</button>
-    <button class="btn btn-outline-secondary w-100 py-2 mt-2" onclick="showManualForm()">📝 Lewati AI — Isi Manual (kuota habis tetap bisa)</button>
+    <button id="btnAnalyze" class="btn btn-primary w-100 py-2 fw-semibold" onclick="processAnalysis()">Analisis transkrip</button>
+    <button class="btn btn-outline-secondary w-100 py-2 mt-2" onclick="showManualForm()">Lewati AI — isi manual</button>
   </div>
 
   <div id="loading" class="card p-5 text-center my-4 bg-white d-none">
@@ -49,10 +44,10 @@ body{font-family:'Segoe UI',Roboto,sans-serif;padding:20px;background:#f4f6f9;fo
   </div>
 
   <div id="stepReview" class="d-none">
-    <div class="alert alert-info py-2 mb-3">💡 <strong>Review &amp; Konfirmasi:</strong> Periksa data 53 kolom hasil ekstraksi berikut sebelum disimpan ke Sheet.</div>
+    <div class="alert alert-light border py-2 mb-3 note">Periksa 53 kolom hasil ekstraksi berikut sebelum disimpan.</div>
     <form id="reviewForm">
       <div class="card p-3 bg-white">
-        <div class="section-header">👤 A. Identitas Pelapor</div>
+        <div class="section-header">A. Identitas pelapor</div>
         <div class="row g-2">
           <div class="col-md-3"><label class="form-label">Nama</label><input id="nama" class="form-control form-control-sm"></div>
           <div class="col-md-2"><label class="form-label">Jenis Kelamin</label><input id="jenisKelamin" class="form-control form-control-sm"></div>
@@ -70,7 +65,7 @@ body{font-family:'Segoe UI',Roboto,sans-serif;padding:20px;background:#f4f6f9;fo
         </div>
       </div>
       <div class="card p-3 bg-white">
-        <div class="section-header">💊 B. Detail Informasi Produk</div>
+        <div class="section-header">B. Informasi produk</div>
         <div class="row g-2">
           <div class="col-md-3"><label class="form-label">Nama Dagang</label><input id="namaDagang" class="form-control form-control-sm"></div>
           <div class="col-md-3"><label class="form-label">Nama Generik</label><input id="namaGenerik" class="form-control form-control-sm"></div>
@@ -88,9 +83,9 @@ body{font-family:'Segoe UI',Roboto,sans-serif;padding:20px;background:#f4f6f9;fo
         </div>
       </div>
       <div class="card p-3 bg-white">
-        <div class="section-header">📋 C. Klasifikasi &amp; Detail Layanan</div>
+        <div class="section-header">C. Klasifikasi dan layanan</div>
         <div class="row g-2">
-          <div class="col-md-3"><label class="form-label text-primary">Tanggal Layanan / Datang</label><input type="date" id="tglLayanan" class="form-control form-control-sm"></div>
+          <div class="col-md-3"><label class="form-label">Tanggal Layanan / Datang</label><input type="date" id="tglLayanan" class="form-control form-control-sm"></div>
           <div class="col-md-3"><label class="form-label">Jenis Layanan</label><input id="jenisLayanan" class="form-control form-control-sm"></div>
           <div class="col-md-3"><label class="form-label">Jenis Komoditi</label><input id="jenisKomoditi" class="form-control form-control-sm"></div>
           <div class="col-md-3"><label class="form-label">Klasifikasi</label><input id="klasifikasi" class="form-control form-control-sm"></div>
@@ -104,7 +99,7 @@ body{font-family:'Segoe UI',Roboto,sans-serif;padding:20px;background:#f4f6f9;fo
         </div>
       </div>
       <div class="card p-3 bg-white">
-        <div class="section-header">🔄 D. Perujukan &amp; SLA</div>
+        <div class="section-header">D. Perujukan dan SLA</div>
         <div class="row g-2">
           <div class="col-md-2"><label class="form-label">Perlu Rujuk?</label><input id="perluRujuk" class="form-control form-control-sm"></div>
           <div class="col-md-2"><label class="form-label">Rujukan 1</label><input id="rujukan1" class="form-control form-control-sm"></div>
@@ -120,7 +115,7 @@ body{font-family:'Segoe UI',Roboto,sans-serif;padding:20px;background:#f4f6f9;fo
         </div>
       </div>
       <div class="card p-3 bg-white">
-        <div class="section-header">💬 E. Draf Jawaban &amp; Admin</div>
+        <div class="section-header">E. Jawaban dan admin</div>
         <div class="row g-2">
           <div class="col-12"><label class="form-label">Draft Jawaban Petugas</label><textarea id="jawaban" class="form-control form-control-sm" rows="3"></textarea></div>
           <div class="col-md-4"><label class="form-label">Keterangan</label><input id="keterangan" class="form-control form-control-sm"></div>
@@ -130,8 +125,8 @@ body{font-family:'Segoe UI',Roboto,sans-serif;padding:20px;background:#f4f6f9;fo
         </div>
       </div>
       <div class="d-flex gap-2 mt-3 mb-5">
-        <button type="button" class="btn btn-outline-secondary w-50 py-2" onclick="resetToInput()">← Input Ulang</button>
-        <button type="button" class="btn btn-success w-50 py-2 fw-semibold" onclick="submitToSheet()">✅ ACC &amp; Simpan ke Sheet</button>
+        <button type="button" class="btn btn-line w-50 py-2" onclick="resetToInput()">Input ulang</button>
+        <button type="button" class="btn btn-dark w-50 py-2" onclick="submitToSheet()">Simpan ke monitoring</button>
       </div>
     </form>
   </div>
