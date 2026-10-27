@@ -8,7 +8,8 @@
 <style>
 .top{border-bottom:1px solid var(--line);background:var(--bg)}
 .top-in{max-width:860px;margin:0 auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{font-family:'Newsreader',Georgia,serif;font-size:16px;font-weight:600}
+.brand{font-family:'Newsreader',Georgia,serif;font-size:16px;font-weight:600;display:flex;align-items:center;gap:10px}
+.brand img{width:30px;height:30px;border-radius:8px;object-fit:cover}
 .brand small{display:block;font-size:12px;color:var(--muted);font-weight:normal;margin-top:2px}
 .top nav{display:flex;gap:4px;align-items:center}
 .top nav a,.top nav button{font-size:13px;color:var(--muted);padding:7px 13px;border-radius:8px;border:1px solid transparent;background:transparent;text-decoration:none;cursor:pointer}
@@ -37,7 +38,7 @@ h1{font-size:40px;line-height:1.15;margin-bottom:8px}
 <body>
 <div class="top">
   <div class="top-in">
-    <div class="brand">AI Yanblik BBPOM<small>BBPOM di Mataram &middot; <span id="q">Kuota …</span></small></div>
+    <div class="brand"><img src="logo.jpeg" alt="Logo Yanblik">AI Yanblik BBPOM<small>BBPOM di Mataram &middot; <span id="q">Kuota …</span></small></div>
     <nav><a class="cur" href="home.html">Beranda</a><a href="index.html">Input</a><a href="monitoring.html">Monitoring</a><button onclick="logout()">Keluar</button></nav>
   </div>
 </div>

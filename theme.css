@@ -10,7 +10,8 @@ h1,h2,h3,.serif{font-family:'Newsreader',Georgia,'Times New Roman',serif!importa
 .ui,.top nav,.r-nav,button,input,select,textarea,label,.metric-l,.sub,.err,.foot{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
 /* Navigasi Reflect */
 .r-nav{max-width:1024px;margin:0 auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.r-nav .brand{font-family:'Newsreader',Georgia,serif;font-size:16px;font-weight:600;color:var(--ink);text-decoration:none}
+.r-nav .brand{font-family:'Newsreader',Georgia,serif;font-size:16px;font-weight:600;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.r-nav .brand img{width:30px;height:30px;border-radius:8px;object-fit:cover}
 .r-nav .links{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
 .r-nav .links a,.r-nav .links button{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 13px;border-radius:8px;border:1px solid transparent;background:transparent;cursor:pointer}
 .r-nav .links a.cur{background:var(--dark);color:#faf9f7}

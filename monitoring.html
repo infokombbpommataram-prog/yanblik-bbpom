@@ -16,6 +16,12 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
   <style>
+    th[data-sort]:not([data-sort=""]){cursor:pointer;user-select:none;white-space:nowrap}
+    th[data-sort]:not([data-sort=""]):hover{color:#2b2a28}
+    .sort-ind{font-size:10px;color:#a09d98}
+    #dbOverlay{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:rgba(250,249,247,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+    #dbOverlay .box{background:#fff;border:1px solid #e8e4de;border-radius:14px;padding:26px 32px;box-shadow:0 4px 24px rgba(0,0,0,.08);font-size:15px;color:#2b2a28}
+    #dbOverlay.hide{display:none}
     .glass-card {
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(8px);
@@ -53,9 +59,11 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans leading-normal min-h-screen relative">
 
+  <div id="dbOverlay"><div class="box">Menghubungkan ke Database…</div></div>
+
   <!-- Header Section -->
   <div class="r-nav">
-    <a class="brand" href="home.html">Yanblik</a>
+    <a class="brand" href="home.html"><img src="logo.jpeg" alt="Logo Yanblik">Yanblik</a>
     <div class="links"><a href="home.html">Beranda</a><a href="index.html">Input</a><a class="cur" href="monitoring.html">Monitoring</a><button onclick="logout()">Keluar</button></div>
   </div>
   <div class="r-wrap" style="padding-bottom:6px">
@@ -237,17 +245,17 @@
         <table class="min-w-full divide-y divide-gray-200 text-xs">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">No</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Tgl Layanan</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Jenis Layanan</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Komoditas</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Isu / Topik</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Klasifikasi</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Subklasifikasi</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Sarana</th>
-              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Pekerjaan</th>
-              <th class="px-4 py-3 text-center font-bold text-gray-500 uppercase tracking-wider">Gender</th>
-              <th class="px-4 py-3 text-center font-bold text-gray-500 uppercase tracking-wider bg-blue-50 text-blue-700">Aksi</th>
+              <th data-sort="" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">No</th>
+              <th data-sort="Tgl Layanan" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Tgl Layanan <span class="sort-ind"></span></th>
+              <th data-sort="Jenis Layanan" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Jenis Layanan <span class="sort-ind"></span></th>
+              <th data-sort="Komoditas" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Komoditas <span class="sort-ind"></span></th>
+              <th data-sort="Isu/Topik" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Isu / Topik <span class="sort-ind"></span></th>
+              <th data-sort="Klasifikasi" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Klasifikasi <span class="sort-ind"></span></th>
+              <th data-sort="Subklasifikasi" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Subklasifikasi <span class="sort-ind"></span></th>
+              <th data-sort="Sarana" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Sarana <span class="sort-ind"></span></th>
+              <th data-sort="Pekerjaan" class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Pekerjaan <span class="sort-ind"></span></th>
+              <th data-sort="Jenis Kelamin" class="px-4 py-3 text-center font-bold text-gray-500 uppercase tracking-wider">Gender <span class="sort-ind"></span></th>
+              <th data-sort="" class="px-4 py-3 text-center font-bold text-gray-500 uppercase tracking-wider bg-blue-50 text-blue-700">Aksi</th>
             </tr>
           </thead>
           <tbody id="tabelBody" class="bg-white divide-y divide-gray-100 text-gray-600 font-medium">
@@ -377,19 +385,34 @@
       sarana: null
     };
 
+    let sortKey = "";
+    let sortDir = 1;
+
     document.addEventListener("DOMContentLoaded", function() {
       if (sessionStorage.getItem('yanblik_auth') !== '1') { location.replace('login.html'); return; }
+      document.querySelectorAll('th[data-sort]:not([data-sort=""])').forEach(function(th) {
+        th.addEventListener('click', function() {
+          const k = th.getAttribute('data-sort');
+          if (sortKey === k) sortDir = -sortDir;
+          else { sortKey = k; sortDir = 1; }
+          currentPage = 1;
+          terapkanSort();
+          renderTabel();
+        });
+      });
       fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'dashboard' }) })
         .then(r => r.json())
         .then(function(j) {
           if (j.ok) {
             dataAsli = j.rows;
+            document.getElementById("dbOverlay").classList.add("hide");
             updateConnectionStatus(true, "Terhubung ke Google Sheets");
             inisialisasiDashboard();
           } else throw new Error(j.error || 'gagal');
         })
         .catch(function(err) {
           console.error("Gagal mengambil data sheet:", err);
+          document.getElementById("dbOverlay").classList.add("hide");
           updateConnectionStatus(false, "Koneksi Gagal. Menggunakan Mock Data.");
           loadMockDataFallback();
         });
@@ -489,6 +512,7 @@
 
       currentPage = 1;
       updateKeyMetrics();
+      terapkanSort();
       renderTabel();
       renderGrafik();
     }
@@ -529,6 +553,21 @@
       ];
       
       return parseInt(parts[2], 10) + " " + (bulanIndo[parseInt(parts[1], 10) - 1] || "") + " " + parts[0];
+    }
+
+    function terapkanSort() {
+      document.querySelectorAll('th .sort-ind').forEach(function(s) { s.textContent = ''; });
+      if (!sortKey) return;
+      const th = document.querySelector('th[data-sort="' + sortKey + '"] .sort-ind');
+      if (th) th.textContent = sortDir === 1 ? ' ▲' : ' ▼';
+      // ponytail: sort string biasa. Tanggal format yyyy-MM-dd jadi urut benar tanpa parse.
+      dataFilter.sort(function(a, b) {
+        const va = (a[sortKey] || '').toString().toLowerCase();
+        const vb = (b[sortKey] || '').toString().toLowerCase();
+        if (va < vb) return -sortDir;
+        if (va > vb) return sortDir;
+        return 0;
+      });
     }
 
     function renderTabel() {
