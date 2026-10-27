@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BBPOM Mataram - Monitoring & Evaluasi Layanan</title>
+  
+  <!-- Tailwind CSS & FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js & Chart.js DataLabels Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .chart-container-fixed {
+      position: relative;
+      height: 270px;
+      width: 100%;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .text-xxs {
+      font-size: 0.65rem;
+    }
+    .modal-backdrop {
+      transition: opacity 0.25s ease;
+    }
+    .modal-content {
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans leading-normal min-h-screen relative">
+
+  <!-- Header Section -->
+  <header class="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 text-white shadow-lg">
+    <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-4">
+        <div class="bg-white p-2 rounded-lg shadow-inner">
+          <i class="fa-solid fa-chart-line text-blue-800 text-3xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-extrabold tracking-wide">Monitoring & Evaluasi Layanan Informasi & Pengaduan</h1>
+          <p class="text-xs md:text-sm text-blue-100 font-light flex items-center gap-1">
+            <i class="fa-solid fa-building"></i> Balai Besar POM di Mataram
+          </p>
+        </div>
+      </div>
+      <div id="connectionStatus" class="px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 bg-yellow-500 text-white shadow">
+        <i class="fa-solid fa-circle-nodes animate-pulse"></i>
+        <span id="statusText">Menghubungkan Data...</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="bg-white text-blue-800 px-4 py-1.5 rounded-full text-xs font-bold shadow hover:bg-blue-50">Extractor</a>
+        <button onclick="logout()" class="bg-red-500 px-4 py-1.5 rounded-full text-xs font-bold shadow hover:bg-red-600">Keluar</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 md:px-6 py-6 space-y-6">
+
+    <!-- Filters Section -->
+    <section class="glass-card rounded-2xl shadow-sm p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+        <h2 class="text-md font-bold text-gray-700 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-blue-600"></i> Panel Filter & Pencarian
+        </h2>
+        <button onclick="resetSemuaFilter()" class="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-rotate-left"></i> Reset Filter
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Cari Kata Kunci</label>
+          <div class="relative">
+            <input type="text" id="searchKey" oninput="aplikasikanFilter()" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 pl-9 pr-4 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" placeholder="Cari isi layanan, alamat, komoditas...">
+            <span class="absolute left-3 top-2.5 text-gray-400 text-sm">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Dari Tanggal</label>
+          <input type="date" id="startDate" onchange="aplikasikanFilter()" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-1.5 px-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 transition">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Sampai Tanggal</label>
+          <input type="date" id="endDate" onchange="aplikasikanFilter()" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-1.5 px-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 transition">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Tahun</label>
+          <select id="filterTahun" onchange="aplikasikanFilter()" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 px-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 transition">
+            <option value="">Semua Tahun</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Jenis Layanan</label>
+          <select id="filterJenisLayanan" onchange="aplikasikanFilter()" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 px-3 text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 transition">
+            <option value="">Semua Jenis</option>
+            <option value="Informasi">Informasi</option>
+            <option value="Pengaduan">Pengaduan</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Metrics Section -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass-card p-5 rounded-2xl flex items-center justify-between shadow-sm">
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Layanan</p>
+          <h3 id="txtTotalLayanan" class="text-2xl md:text-3xl font-extrabold text-blue-900 mt-1">0</h3>
+        </div>
+        <div class="bg-blue-100 text-blue-700 p-3.5 rounded-xl"><i class="fa-solid fa-list-check text-xl"></i></div>
+      </div>
+      
+      <div class="glass-card p-5 rounded-2xl flex items-center justify-between shadow-sm">
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Layanan Informasi</p>
+          <h3 id="txtTotalInformasi" class="text-2xl md:text-3xl font-extrabold text-indigo-900 mt-1">0</h3>
+        </div>
+        <div class="bg-indigo-100 text-indigo-700 p-3.5 rounded-xl"><i class="fa-solid fa-circle-info text-xl"></i></div>
+      </div>
+
+      <div class="glass-card p-5 rounded-2xl flex items-center justify-between shadow-sm">
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pengaduan Masuk</p>
+          <h3 id="txtTotalPengaduan" class="text-2xl md:text-3xl font-extrabold text-red-900 mt-1">0</h3>
+        </div>
+        <div class="bg-red-100 text-red-700 p-3.5 rounded-xl"><i class="fa-solid fa-triangle-exclamation text-xl"></i></div>
+      </div>
+
+      <div class="glass-card p-5 rounded-2xl flex items-center justify-between shadow-sm">
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Rasio Pengaduan</p>
+          <h3 id="txtRasioLayanan" class="text-2xl md:text-3xl font-extrabold text-teal-950 mt-1">0%</h3>
+        </div>
+        <div class="bg-teal-100 text-teal-700 p-3.5 rounded-xl"><i class="fa-solid fa-percent text-xl"></i></div>
+      </div>
+    </section>
+
+    <!-- Trend Monthly Chart Section -->
+    <section class="glass-card rounded-2xl shadow-sm p-6">
+      <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-chart-area text-blue-600"></i> Tren Distribusi Layanan Berdasarkan Bulan
+      </h3>
+      <div class="relative w-full" style="height: 300px;">
+        <canvas id="chartBulanan"></canvas>
+      </div>
+    </section>
+
+    <!-- Five Pie/Doughnut Charts Section -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 1. Komoditi -->
+      <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <i class="fa-solid fa-box-open text-blue-600"></i> Proporsi Komoditas
+        </h4>
+        <div class="chart-container-fixed">
+          <canvas id="chartKomoditas"></canvas>
+        </div>
+      </div>
+
+      <!-- 2. Klasifikasi -->
+      <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <i class="fa-solid fa-tags text-indigo-600"></i> Klasifikasi Layanan
+        </h4>
+        <div class="chart-container-fixed">
+          <canvas id="chartKlasifikasi"></canvas>
+        </div>
+      </div>
+
+      <!-- 3. Jenis Kelamin -->
+      <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <i class="fa-solid fa-venus-mars text-pink-600"></i> Profil Jenis Kelamin
+        </h4>
+        <div class="chart-container-fixed">
+          <canvas id="chartGender"></canvas>
+        </div>
+      </div>
+
+      <!-- 4. Pekerjaan -->
+      <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between lg:col-span-2">
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <i class="fa-solid fa-briefcase text-yellow-600"></i> Profil Pekerjaan Pelapor
+        </h4>
+        <div class="chart-container-fixed" style="height: 280px;">
+          <canvas id="chartPekerjaan"></canvas>
+        </div>
+      </div>
+
+      <!-- 5. Sarana -->
+      <div class="glass-card p-5 rounded-2xl shadow-sm flex flex-col justify-between">
+        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <i class="fa-solid fa-paper-plane text-teal-600"></i> Sarana / Media Layanan
+        </h4>
+        <div class="chart-container-fixed">
+          <canvas id="chartSarana"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table Section -->
+    <section class="glass-card rounded-2xl shadow-sm p-6 overflow-hidden">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+        <div>
+          <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-table text-blue-600"></i> Register Detail Layanan (Data Teranonymisasi)
+          </h3>
+          <p class="text-xs text-gray-400 mt-1">Gunakan tombol 'Detail' pada ujung kolom kanan untuk melihat isi narasi lengkap.</p>
+        </div>
+        
+        <div class="flex items-center space-x-3 text-sm">
+          <label class="text-gray-500 text-xs font-semibold">Tampilkan:</label>
+          <select id="pageSize" onchange="changePageSize()" class="bg-gray-50 border border-gray-200 rounded-lg py-1.5 px-3 focus:bg-white text-xs font-bold focus:ring-2 focus:ring-blue-500 transition">
+            <option value="20">20 Baris</option>
+            <option value="50">50 Baris</option>
+            <option value="100">100 Baris</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto border border-gray-100 rounded-xl custom-scrollbar">
+        <table class="min-w-full divide-y divide-gray-200 text-xs">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">No</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Tgl Layanan</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Jenis Layanan</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Komoditas</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Isu / Topik</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Klasifikasi</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Subklasifikasi</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Sarana</th>
+              <th class="px-4 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Pekerjaan</th>
+              <th class="px-4 py-3 text-center font-bold text-gray-500 uppercase tracking-wider">Gender</th>
+              <th class="px-4 py-3 text-center font-bold text-gray-500 uppercase tracking-wider bg-blue-50 text-blue-700">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelBody" class="bg-white divide-y divide-gray-100 text-gray-600 font-medium">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-5 border-t border-gray-100 pt-4">
+        <div class="text-xs text-gray-500 font-medium">
+          Menampilkan <span id="txtStartEntry" class="font-bold text-gray-700">0</span> sampai <span id="txtEndEntry" class="font-bold text-gray-700">0</span> dari <span id="txtTotalEntries" class="font-bold text-gray-700">0</span> data hasil filter
+        </div>
+        
+        <div class="flex items-center space-x-1" id="paginationControls">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Detail Element -->
+  <div id="modalDetail" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none modal-backdrop" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);">
+    <div class="bg-white rounded-2xl max-w-md w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col transform scale-95 opacity-0 modal-content">
+      
+      <div class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white px-5 py-3.5 flex justify-between items-center flex-shrink-0">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-folder-open text-lg text-blue-200"></i>
+          <div>
+            <h3 class="text-xs font-bold tracking-wide" id="modalRegId">REG/ID/000</h3>
+            <p class="text-[10px] text-blue-200 font-light">Detail Transaksi Log Layanan</p>
+          </div>
+        </div>
+        <button onclick="tutupModal()" class="text-white hover:text-gray-200 text-md transition focus:outline-none">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4 custom-scrollbar text-xs flex-grow" style="max-height: calc(85vh - 110px);">
+        
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+            <span class="block text-[10px] font-bold text-gray-400 uppercase">Jenis Layanan</span>
+            <span id="modalJenisLayanan" class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase"></span>
+          </div>
+          <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+            <span class="block text-[10px] font-bold text-gray-400 uppercase">Tanggal Masuk</span>
+            <span id="modalTglLayanan" class="block mt-0.5 font-bold text-gray-800"></span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+            <span class="block text-[10px] font-bold text-gray-400 uppercase">Komoditas</span>
+            <span id="modalKomoditas" class="block mt-0.5 font-semibold text-blue-900 truncate"></span>
+          </div>
+          <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+            <span class="block text-[10px] font-bold text-gray-400 uppercase">Klasifikasi</span>
+            <span id="modalKlasifikasi" class="block mt-0.5 font-semibold text-gray-800 truncate"></span>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+          <span class="block text-[10px] font-bold text-gray-400 uppercase">Subklasifikasi</span>
+          <span id="modalSubklasifikasi" class="block mt-0.5 text-gray-600"></span>
+        </div>
+
+        <div class="bg-blue-50 bg-opacity-40 p-2.5 rounded-xl border border-blue-100">
+          <span class="block text-[10px] font-bold text-blue-500 uppercase">Isu / Topik Pokok</span>
+          <p id="modalIsu" class="mt-0.5 font-bold text-gray-900"></p>
+        </div>
+
+        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+          <span class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Narasi / Isi Lengkap</span>
+          <div id="modalIsiLayanan" class="text-gray-700 leading-relaxed bg-white p-2.5 rounded-lg border border-gray-200 max-h-[150px] overflow-y-auto custom-scrollbar whitespace-pre-line text-[11px]"></div>
+        </div>
+
+        <div class="border-t border-gray-100 pt-3">
+          <h4 class="text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center gap-1">
+            <i class="fa-solid fa-id-card text-gray-400"></i> Profil Demografi (Anonim)
+          </h4>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="bg-gray-50 p-2 rounded-lg flex justify-between">
+              <span class="text-gray-400">Pekerjaan:</span>
+              <span id="modalPekerjaan" class="font-semibold text-gray-800 truncate max-w-[100px]"></span>
+            </div>
+            <div class="bg-gray-50 p-2 rounded-lg flex justify-between">
+              <span class="text-gray-400">Gender:</span>
+              <span id="modalGender" class="font-semibold text-gray-800"></span>
+            </div>
+            <div class="bg-gray-50 p-2 rounded-lg flex justify-between">
+              <span class="text-gray-400">Media:</span>
+              <span id="modalSarana" class="font-semibold text-gray-800 truncate max-w-[100px]"></span>
+            </div>
+            <div class="bg-gray-50 p-2 rounded-lg flex justify-between">
+              <span class="text-gray-400">Wilayah:</span>
+              <span id="modalAlamat" class="font-semibold text-gray-800 truncate max-w-[100px]"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex justify-end flex-shrink-0">
+        <button onclick="tutupModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-1.5 rounded-xl text-xs transition focus:outline-none">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  
+  <script src="config.js"></script>
+  <script>
+
+    // Registrasi Plugin DataLabels Global
+    Chart.register(ChartDataLabels);
+
+    let dataAsli = [];
+    let dataFilter = [];
+    
+    let currentPage = 1;
+    let pageSize = 20;
+
+    let charts = {
+      bulanan: null,
+      komoditas: null,
+      klasifikasi: null,
+      gender: null,
+      pekerjaan: null,
+      sarana: null
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
+      if (sessionStorage.getItem('yanblik_auth') !== '1') { location.replace('login.html'); return; }
+      fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'dashboard' }) })
+        .then(r => r.json())
+        .then(function(j) {
+          if (j.ok) {
+            dataAsli = j.rows;
+            updateConnectionStatus(true, "Terhubung ke Google Sheets");
+            inisialisasiDashboard();
+          } else throw new Error(j.error || 'gagal');
+        })
+        .catch(function(err) {
+          console.error("Gagal mengambil data sheet:", err);
+          updateConnectionStatus(false, "Koneksi Gagal. Menggunakan Mock Data.");
+          loadMockDataFallback();
+        });
+    });
+
+    function logout(){ sessionStorage.removeItem('yanblik_auth'); location.replace('login.html'); }
+
+    function updateConnectionStatus(isReal, message) {
+      const el = document.getElementById("connectionStatus");
+      const text = document.getElementById("statusText");
+      if (isReal) {
+        el.className = "px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 bg-green-500 text-white shadow";
+        text.innerText = message;
+      } else {
+        el.className = "px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 bg-yellow-500 text-white shadow";
+        text.innerText = message;
+      }
+    }
+
+    function inisialisasiDashboard() {
+      inisialisasiDropdownTahun();
+      aplikasikanFilter();
+    }
+
+    function inisialisasiDropdownTahun() {
+      const filterTahun = document.getElementById("filterTahun");
+      filterTahun.innerHTML = '<option value="">Semua Tahun</option>';
+      const tahunSet = new Set();
+
+      dataAsli.forEach(item => {
+        if (item["Tgl Layanan"]) {
+          const parts = item["Tgl Layanan"].split("-");
+          if (parts.length > 0 && parts[0].length === 4) {
+            tahunSet.add(parts[0]);
+          }
+        }
+      });
+
+      const tahunSorted = Array.from(tahunSet).sort((a, b) => b - a);
+      tahunSorted.forEach(th => {
+        let opt = document.createElement("option");
+        opt.value = th;
+        opt.innerText = th;
+        filterTahun.appendChild(opt);
+      });
+    }
+
+    function resetSemuaFilter() {
+      document.getElementById("searchKey").value = "";
+      document.getElementById("startDate").value = "";
+      document.getElementById("endDate").value = "";
+      document.getElementById("filterTahun").value = "";
+      document.getElementById("filterJenisLayanan").value = "";
+      aplikasikanFilter();
+    }
+
+    function aplikasikanFilter() {
+      const searchKey = document.getElementById("searchKey").value.toLowerCase();
+      const startDateVal = document.getElementById("startDate").value;
+      const endDateVal = document.getElementById("endDate").value;
+      const tahunVal = document.getElementById("filterTahun").value;
+      const jenisLayananVal = document.getElementById("filterJenisLayanan").value;
+
+      dataFilter = dataAsli.filter(item => {
+        let matchSearch = true;
+        if (searchKey) {
+          const strIsi = (item["Isi Layanan"] || "").toString().toLowerCase();
+          const strAlamat = (item["Alamat"] || "").toString().toLowerCase();
+          const strNoReg = (item["Reg Id"] || "").toString().toLowerCase();
+          const strIsu = (item["Isu/Topik"] || "").toString().toLowerCase();
+          const strKmd = (item["Komoditas"] || "").toString().toLowerCase();
+          matchSearch = strIsi.includes(searchKey) || strAlamat.includes(searchKey) || strNoReg.includes(searchKey) || strIsu.includes(searchKey) || strKmd.includes(searchKey);
+        }
+
+        let matchDateRange = true;
+        if (item["Tgl Layanan"]) {
+          const tglStr = item["Tgl Layanan"];
+          if (startDateVal && tglStr < startDateVal) matchDateRange = false;
+          if (endDateVal && tglStr > endDateVal) matchDateRange = false;
+        } else if (startDateVal || endDateVal) {
+          matchDateRange = false;
+        }
+
+        let matchTahun = true;
+        if (tahunVal && item["Tgl Layanan"]) {
+          const th = item["Tgl Layanan"].split("-")[0];
+          if (th !== tahunVal) matchTahun = false;
+        }
+
+        let matchJenis = true;
+        if (jenisLayananVal && item["Jenis Layanan"]) {
+          if (item["Jenis Layanan"].toLowerCase() !== jenisLayananVal.toLowerCase()) matchJenis = false;
+        }
+
+        return matchSearch && matchDateRange && matchTahun && matchJenis;
+      });
+
+      currentPage = 1;
+      updateKeyMetrics();
+      renderTabel();
+      renderGrafik();
+    }
+
+    function updateKeyMetrics() {
+      const total = dataFilter.length;
+      let totalInformasi = 0;
+      let totalPengaduan = 0;
+
+      dataFilter.forEach(item => {
+        const jl = (item["Jenis Layanan"] || "").toLowerCase();
+        if (jl === "informasi") totalInformasi++;
+        if (jl === "pengaduan") totalPengaduan++;
+      });
+
+      document.getElementById("txtTotalLayanan").innerText = total;
+      document.getElementById("txtTotalInformasi").innerText = totalInformasi;
+      document.getElementById("txtTotalPengaduan").innerText = totalPengaduan;
+
+      const rasio = total > 0 ? ((totalPengaduan / total) * 100).toFixed(1) : 0;
+      document.getElementById("txtRasioLayanan").innerText = rasio + "%";
+    }
+
+    function changePageSize() {
+      pageSize = parseInt(document.getElementById("pageSize").value);
+      currentPage = 1;
+      renderTabel();
+    }
+
+    function formatTanggalIndo(tglStr) {
+      if (!tglStr) return "-";
+      const parts = tglStr.split("-");
+      if (parts.length !== 3) return tglStr;
+      
+      const bulanIndo = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      
+      return parseInt(parts[2], 10) + " " + (bulanIndo[parseInt(parts[1], 10) - 1] || "") + " " + parts[0];
+    }
+
+    function renderTabel() {
+      const tbody = document.getElementById("tabelBody");
+      tbody.innerHTML = "";
+
+      const totalEntries = dataFilter.length;
+      
+      if (totalEntries === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="11" class="px-4 py-8 text-center text-gray-400 font-normal">
+              <i class="fa-regular fa-folder-open text-3xl mb-2 block"></i> Tidak ada data hasil filter ditemukan.
+            </td>
+          </tr>
+        `;
+        document.getElementById("txtStartEntry").innerText = 0;
+        document.getElementById("txtEndEntry").innerText = 0;
+        document.getElementById("txtTotalEntries").innerText = 0;
+        document.getElementById("paginationControls").innerHTML = "";
+        return;
+      }
+
+      const startIdx = (currentPage - 1) * pageSize;
+      const endIdx = Math.min(startIdx + pageSize, totalEntries);
+      const activeDataPage = dataFilter.slice(startIdx, endIdx);
+
+      activeDataPage.forEach((item, index) => {
+        const realDataIdx = startIdx + index;
+
+        let tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 transition duration-150";
+
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-semibold text-gray-500">${realDataIdx + 1}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-700 font-medium">${formatTanggalIndo(item["Tgl Layanan"])}</td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <span class="px-2 py-0.5 rounded text-xxs font-bold uppercase ${
+              (item["Jenis Layanan"] || '').toLowerCase() === 'informasi' 
+                ? 'bg-blue-100 text-blue-800' 
+                : 'bg-red-100 text-red-800'
+            }">
+              ${item["Jenis Layanan"] || '-'}
+            </span>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap text-blue-900 font-semibold">${item["Komoditas"] || '-'}</td>
+          <td class="px-4 py-3 max-w-xs truncate text-gray-500" title="${item["Isu/Topik"] || ''}">${item["Isu/Topik"] || '-'}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-700">${item["Klasifikasi"] || '-'}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-500">${item["Subklasifikasi"] || '-'}</td>
+          <td class="px-4 py-3 whitespace-nowrap"><i class="fa-solid fa-square-rss text-teal-500 mr-1"></i>${item["Sarana"] || '-'}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-600">${item["Pekerjaan"] || '-'}</td>
+          <td class="px-4 py-3 text-center">
+            <span class="px-1.5 py-0.5 rounded text-xs font-semibold ${
+              item["Jenis Kelamin"] === 'L' ? 'bg-indigo-100 text-indigo-700' : 'bg-pink-100 text-pink-700'
+            }">
+              ${item["Jenis Kelamin"] || '-'}
+            </span>
+          </td>
+          <td class="px-4 py-2 text-center whitespace-nowrap bg-blue-50 bg-opacity-40">
+            <button onclick="bukaModal(${realDataIdx})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg text-xxs transition shadow-sm hover:shadow flex items-center gap-1 mx-auto focus:outline-none">
+              <i class="fa-solid fa-eye text-xxs"></i> Detail
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("txtStartEntry").innerText = startIdx + 1;
+      document.getElementById("txtEndEntry").innerText = endIdx;
+      document.getElementById("txtTotalEntries").innerText = totalEntries;
+
+      renderPaginationControls(totalEntries);
+    }
+
+    function bukaModal(indexFilter) {
+      const item = dataFilter[indexFilter];
+      if (!item) return;
+
+      document.getElementById("modalRegId").innerText = item["Reg Id"] || `LOG/ID/#${indexFilter + 1}`;
+      document.getElementById("modalTglLayanan").innerText = formatTanggalIndo(item["Tgl Layanan"]);
+      document.getElementById("modalKomoditas").innerText = item["Komoditas"] || "-";
+      document.getElementById("modalKlasifikasi").innerText = item["Klasifikasi"] || "-";
+      document.getElementById("modalSubklasifikasi").innerText = item["Subklasifikasi"] || "-";
+      document.getElementById("modalIsu").innerText = item["Isu/Topik"] || "-";
+      document.getElementById("modalIsiLayanan").innerText = item["Isi Layanan"] || "Tidak ada narasi detail.";
+      document.getElementById("modalPekerjaan").innerText = item["Pekerjaan"] || "-";
+      document.getElementById("modalSarana").innerText = item["Sarana"] || "-";
+      document.getElementById("modalAlamat").innerText = item["Alamat"] || "-";
+      
+      const genderText = item["Jenis Kelamin"] === "L" ? "Laki-laki" : item["Jenis Kelamin"] === "P" ? "Perempuan" : "-";
+      document.getElementById("modalGender").innerText = genderText;
+
+      const badgeJenis = document.getElementById("modalJenisLayanan");
+      badgeJenis.innerText = item["Jenis Layanan"] || "-";
+      if ((item["Jenis Layanan"] || "").toLowerCase() === "informasi") {
+        badgeJenis.className = "inline-block mt-1 px-2.5 py-0.5 rounded text-xs font-bold uppercase bg-blue-100 text-blue-800";
+      } else {
+        badgeJenis.className = "inline-block mt-1 px-2.5 py-0.5 rounded text-xs font-bold uppercase bg-red-100 text-red-800";
+      }
+
+      const backdrop = document.getElementById("modalDetail");
+      const content = backdrop.querySelector(".modal-content");
+      
+      backdrop.classList.remove("opacity-0", "pointer-events-none");
+      setTimeout(() => {
+        content.classList.remove("scale-95", "opacity-0");
+      }, 10);
+    }
+
+    function tutupModal() {
+      const backdrop = document.getElementById("modalDetail");
+      const content = backdrop.querySelector(".modal-content");
+      
+      content.classList.add("scale-95", "opacity-0");
+      setTimeout(() => {
+        backdrop.classList.add("opacity-0", "pointer-events-none");
+      }, 200);
+    }
+
+    function renderPaginationControls(totalEntries) {
+      const container = document.getElementById("paginationControls");
+      container.innerHTML = "";
+
+      const totalPages = Math.ceil(totalEntries / pageSize);
+      if (totalPages <= 1) return;
+
+      let btnPrev = document.createElement("button");
+      btnPrev.disabled = currentPage === 1;
+      btnPrev.className = "px-2 py-1.5 rounded-lg border border-gray-200 text-xs font-bold transition flex items-center " + 
+        (currentPage === 1 ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white text-gray-600 hover:bg-gray-50");
+      btnPrev.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
+      btnPrev.onclick = function() {
+        if (currentPage > 1) {
+          currentPage--;
+          renderTabel();
+        }
+      };
+      container.appendChild(btnPrev);
+
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, startPage + 4);
+      if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        let btnPage = document.createElement("button");
+        btnPage.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition " +
+          (currentPage === i ? "bg-blue-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200");
+        btnPage.innerText = i;
+        btnPage.onclick = function() {
+          currentPage = i;
+          renderTabel();
+        };
+        container.appendChild(btnPage);
+      }
+
+      let btnNext = document.createElement("button");
+      btnNext.disabled = currentPage === totalPages;
+      btnNext.className = "px-2 py-1.5 rounded-lg border border-gray-200 text-xs font-bold transition flex items-center " + 
+        (currentPage === totalPages ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white text-gray-600 hover:bg-gray-50");
+      btnNext.innerHTML = `<i class="fa-solid fa-chevron-right"></i>`;
+      btnNext.onclick = function() {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderTabel();
+        }
+      };
+      container.appendChild(btnNext);
+    }
+
+    // ==================== RENDERING GRAFIK DENGAN DATALABELS ====================
+    function renderGrafik() {
+      let kmdFreq = {};
+      let klsFreq = {};
+      let gndFreq = { "L": 0, "P": 0 };
+      let pkrFreq = {};
+      let srnFreq = {};
+      let blnFreq = {};
+
+      const namaBulanIndo = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+
+      dataFilter.forEach(item => {
+        const kmd = item["Komoditas"] || "Lain-lain";
+        kmdFreq[kmd] = (kmdFreq[kmd] || 0) + 1;
+
+        const kls = item["Klasifikasi"] || "Belum Terklasifikasi";
+        klsFreq[kls] = (klsFreq[kls] || 0) + 1;
+
+        const gnd = item["Jenis Kelamin"] || "Tidak Diketahui";
+        if (gnd === "L" || gnd === "P") {
+          gndFreq[gnd]++;
+        } else {
+          gndFreq["Tidak Diketahui"] = (gndFreq["Tidak Diketahui"] || 0) + 1;
+        }
+
+        const pkr = item["Pekerjaan"] || "Lainnya";
+        pkrFreq[pkr] = (pkrFreq[pkr] || 0) + 1;
+
+        const srn = item["Sarana"] || "Datang Langsung";
+        srnFreq[srn] = (srnFreq[srn] || 0) + 1;
+
+        if (item["Tgl Layanan"]) {
+          const parts = item["Tgl Layanan"].split("-");
+          if (parts.length >= 2) {
+            const keyBulan = parts[0] + "-" + parts[1];
+            blnFreq[keyBulan] = (blnFreq[keyBulan] || 0) + 1;
+          }
+        }
+      });
+
+      Object.keys(charts).forEach(key => {
+        if (charts[key]) charts[key].destroy();
+      });
+
+      // --- 1. TREN BULANAN ---
+      const sortedMonths = Object.keys(blnFreq).sort();
+      const labelsBulan = sortedMonths.map(ym => {
+        const parts = ym.split("-");
+        return (namaBulanIndo[parseInt(parts[1], 10) - 1] || "") + " " + parts[0];
+      });
+      const dataBulan = sortedMonths.map(ym => blnFreq[ym]);
+
+      charts.bulanan = new Chart(document.getElementById('chartBulanan').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: labelsBulan,
+          datasets: [{
+            label: 'Jumlah Layanan',
+            data: dataBulan,
+            borderColor: '#1d4ed8',
+            backgroundColor: 'rgba(29, 78, 216, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#1d4ed8'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { display: false },
+            datalabels: {
+              align: 'top',
+              anchor: 'end',
+              font: { weight: 'bold', size: 10 },
+              color: '#1d4ed8'
+            }
+          },
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+      });
+
+      // --- KONFIGURASI DATALABELS KHUSUS PIE/DOUGHNUT ---
+      const pieDataLabelConfig = {
+        color: '#ffffff',
+        font: { weight: 'bold', size: 10 },
+        formatter: (value, ctx) => {
+          if (value === 0) return '';
+          let sum = 0;
+          let dataArr = ctx.chart.data.datasets[0].data;
+          dataArr.map(data => { sum += data; });
+          let percentage = (value * 100 / sum).toFixed(1) + "%";
+          // Menampilkan Jumlah Nilai & Persentase sekaligus di atas pie slice
+          return value + "\n(" + percentage + ")";
+        },
+        textAlign: 'center'
+      };
+
+      // --- 2. KOMODITAS ---
+      charts.komoditas = new Chart(document.getElementById('chartKomoditas').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(kmdFreq),
+          datasets: [{
+            data: Object.values(kmdFreq),
+            backgroundColor: ['#3b82f6', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#ec4899', '#6b7280']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } },
+            datalabels: pieDataLabelConfig
+          }
+        }
+      });
+
+      // --- 3. KLASIFIKASI ---
+      charts.klasifikasi = new Chart(document.getElementById('chartKlasifikasi').getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: Object.keys(klsFreq),
+          datasets: [{
+            data: Object.values(klsFreq),
+            backgroundColor: ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#d97706', '#84cc16', '#a855f7']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } },
+            datalabels: pieDataLabelConfig
+          }
+        }
+      });
+
+      // --- 4. GENDER ---
+      charts.gender = new Chart(document.getElementById('chartGender').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(gndFreq).map(g => g === 'L' ? 'Laki-laki' : g === 'P' ? 'Perempuan' : g),
+          datasets: [{
+            data: Object.values(gndFreq),
+            backgroundColor: ['#4f46e5', '#ec4899', '#94a3b8']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+            datalabels: pieDataLabelConfig
+          }
+        }
+      });
+
+      // --- 5. PEKERJAAN ---
+      charts.pekerjaan = new Chart(document.getElementById('chartPekerjaan').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(pkrFreq),
+          datasets: [{
+            data: Object.values(pkrFreq),
+            backgroundColor: '#eab308',
+            borderRadius: 5
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { display: false },
+            datalabels: {
+              anchor: 'end',
+              align: 'end',
+              font: { weight: 'bold', size: 10 },
+              color: '#854d0e'
+            }
+          },
+          scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+      });
+
+      // --- 6. SARANA ---
+      charts.sarana = new Chart(document.getElementById('chartSarana').getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: Object.keys(srnFreq),
+          datasets: [{
+            data: Object.values(srnFreq),
+            backgroundColor: ['#0d9488', '#06b6d4', '#f43f5e', '#a855f7', '#10b981']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { 
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } },
+            datalabels: pieDataLabelConfig
+          }
+        }
+      });
+    }
+
+    function loadMockDataFallback() {
+      const mockData = [
+        {
+          "Tgl Layanan": "2026-01-15", "Reg Id": "REG/2026/001", "Alamat": "Ampenan, Mataram", 
+          "Pekerjaan": "Swasta", "Jenis Kelamin": "L", "Jenis Layanan": "Informasi", 
+          "Komoditas": "Pangan", "Klasifikasi": "Izin Edar", "Subklasifikasi": "Registrasi Baru", 
+          "Sarana": "Datang Langsung", "Isu/Topik": "Pendaftaran PIRT", "Isi Layanan": "Konsultasi izin edar produk PIRT bumbu masakan tradisional."
+        },
+        {
+          "Tgl Layanan": "2026-01-22", "Reg Id": "REG/2026/002", "Alamat": "Cakra, Mataram", 
+          "Pekerjaan": "IRT", "Jenis Kelamin": "P", "Jenis Layanan": "Pengaduan", 
+          "Komoditas": "Kosmetik", "Klasifikasi": "Kualitas Produk", "Subklasifikasi": "Efek Samping", 
+          "Sarana": "Aplikasi Mobile", "Isu/Topik": "Kosmetik Ilegal", "Isi Layanan": "Pengaduan kosmetik krim pemutih wajah gatal-gatal karena diduga mengandung merkuri."
+        },
+        {
+          "Tgl Layanan": "2026-02-05", "Reg Id": "REG/2026/003", "Alamat": "Senggigi, Lombok Barat", 
+          "Pekerjaan": "Apoteker", "Jenis Kelamin": "L", "Jenis Layanan": "Informasi", 
+          "Komoditas": "Suplemen Kesehatan", "Klasifikasi": "Izin Edar", "Subklasifikasi": "Verifikasi Dokumen", 
+          "Sarana": "E-mail", "Isu/Topik": "Importasi Produk", "Isi Layanan": "Menanyakan status perizinan suplemen kesehatan impor serta pemenuhan persyaratan dokumen SKI."
+        },
+        {
+          "Tgl Layanan": "2026-02-18", "Reg Id": "REG/2026/004", "Alamat": "Praya, Lombok Tengah", 
+          "Pekerjaan": "PNS", "Jenis Kelamin": "L", "Jenis Layanan": "Informasi", 
+          "Komoditas": "Obat Tradisional", "Klasifikasi": "Pengujian Lab", "Subklasifikasi": "Tarif PNBP", 
+          "Sarana": "Telepon", "Isu/Topik": "Uji Laboratorium", "Isi Layanan": "Informasi mengenai tata cara pengujian sampel jamu tradisional untuk mendeteksi Bahan Kimia Obat (BKO)."
+        },
+        {
+          "Tgl Layanan": "2026-03-02", "Reg Id": "REG/2026/005", "Alamat": "Selong, Lombok Timur", 
+          "Pekerjaan": "Wiraswasta", "Jenis Kelamin": "L", "Jenis Layanan": "Pengaduan", 
+          "Komoditas": "Obat", "Klasifikasi": "Penyalahgunaan Obat", "Subklasifikasi": "Toko Obat Ilegal", 
+          "Sarana": "WhatsApp", "Isu/Topik": "Obat Keras Bebas", "Isi Layanan": "Pengaduan adanya penjualan obat keras daftar G secara bebas di toko kelontong sekitar pemukiman warga."
+        }
+      ];
+
+      for (let i = 6; i <= 35; i++) {
+        const isL = i % 2 === 0;
+        const tipe = i % 3 === 0 ? "Pengaduan" : "Informasi";
+        const komoditases = ["Obat", "Pangan", "Kosmetik", "Obat Tradisional", "Suplemen Kesehatan"];
+        const kmdChosen = komoditases[i % komoditases.length];
+        
+        mockData.push({
+          "Tgl Layanan": `2026-06-${String((i % 28) + 1).padStart(2, '0')}`,
+          "Reg Id": `REG/2026/${String(i).padStart(3, '0')}`,
+          "Alamat": i % 2 === 0 ? "Mataram" : "Lombok Utara",
+          "Pekerjaan": i % 4 === 0 ? "Swasta" : i % 4 === 1 ? "PNS" : i % 4 === 2 ? "IRT" : "Mahasiswa",
+          "Jenis Kelamin": isL ? "L" : "P",
+          "Jenis Layanan": tipe,
+          "Komoditas": kmdChosen,
+          "Klasifikasi": tipe === "Pengaduan" ? "Mutu & Kualitas" : "Izin Sertifikasi",
+          "Subklasifikasi": "Umum",
+          "Sarana": i % 3 === 0 ? "WhatsApp" : i % 3 === 1 ? "Datang Langsung" : "E-mail",
+          "Isu/Topik": `Kepatuhan Regulasi ${kmdChosen}`,
+          "Isi Layanan": `Layanan pengujian, sertifikasi sarana produksi, dan perizinan terkait komoditas ${kmdChosen} dengan nomor ID log transaksi #${i}.`
+        });
+      }
+
+      dataAsli = mockData;
+      inisialisasiDashboard();
+    }
+  
+  </script>
+</body>
+</html>

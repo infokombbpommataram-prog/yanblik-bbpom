@@ -1,6 +1,6 @@
 # AI Yanblik BBPOM — Cloudflare Pages rebuild
 
-Frontend statis (tanpa build). Backend tetap Google Apps Script (`../Code.gs`) sebagai JSON API. Satu API key Gemini, kuota global 5 RPM / 20 RPD dihitung di GAS.
+Frontend statis (tanpa build). Backend satu Google Apps Script (`../Code.gs`) sebagai JSON API untuk extractor + dashboard monitoring. Satu spreadsheet monitoring, satu API key Gemini, kuota global 5 RPM / 20 RPD dihitung di GAS.
 
 ## 1. Update GAS (pakai deployment existing)
 
@@ -16,8 +16,8 @@ Frontend statis (tanpa build). Backend tetap Google Apps Script (`../Code.gs`) s
 ```powershell
 cd web
 git init -b main
-git add index.html login.html app.js config.js
-git commit -m "Rebuild Pages: login, extractor 53 kolom, quota badge"
+git add index.html monitoring.html login.html app.js config.js
+git commit -m "Gabung monitoring dashboard (DB monitoring), nav 2 arah"
 gh repo create yanblik-bbpom --public --source=. --push
 ```
 
@@ -33,8 +33,12 @@ Hanya folder `web/` yang jadi root repo — file `.txt` dan `Code.gs` di luar re
 
 ## 4. Alur pakai
 
-Login → tempel transkrip → Analisis (counter `X/5 per menit • Y/20 per hari` di header) → review 53 kolom → ACC & Simpan ke Sheet `Lembar Kerja`.
-Kuota habis → tombol Analisis dikunci, tombol Isi Manual tetap jalan (tanpa panggil Gemini).
+Login → extractor (`index.html`): tempel transkrip → Analisis → review 53 kolom → ACC & Simpan (tulis baris lengkap ke tab "Lembar Kerja" + baris ringkas 13 kolom ke sheet dashboard) → buka Monitoring untuk lihat grafik + tabel terupdate.
+Kuota habis → tombol Analisis dikunci, Isi Manual tetap jalan (tanpa panggil Gemini).
+
+## 5. Mapping simpan ringkas → dashboard
+
+jenisKomoditi→Komoditas, layananMelalui→Sarana, isuTopik→Isu/Topik, Laki-laki→L, Perempuan→P, Alamat=kotaKab||alamat, Reg Id=REG/tahun/NNN dari jumlah baris.
 
 ## 5. Batas sadar
 
