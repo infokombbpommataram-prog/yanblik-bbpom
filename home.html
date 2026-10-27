@@ -6,32 +6,31 @@
 <title>Beranda - AI Yanblik BBPOM</title>
 <link rel="stylesheet" href="theme.css">
 <style>
-.top{border-bottom:1px solid var(--line);background:var(--bg)}
-.top-in{max-width:860px;margin:0 auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{font-family:'Newsreader',Georgia,serif;font-size:16px;font-weight:600;display:flex;align-items:center;gap:10px}
-.brand img{width:30px;height:30px;border-radius:8px;object-fit:cover}
+.top{background:transparent;border:none}
+.top-in{max-width:1024px;margin:14px auto 0;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-line);border-radius:99px}
+.brand{font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;padding-left:8px}
+.brand img{width:28px;height:28px;border-radius:8px;object-fit:cover}
 .brand small{display:block;font-size:12px;color:var(--muted);font-weight:normal;margin-top:2px}
 .top nav{display:flex;gap:4px;align-items:center}
-.top nav a,.top nav button{font-size:13px;color:var(--muted);padding:7px 13px;border-radius:8px;border:1px solid transparent;background:transparent;text-decoration:none;cursor:pointer}
-.top nav a.cur{background:var(--dark);color:#faf9f7}
-.top nav button{border-color:var(--line);color:var(--ink)}
-.wrap{max-width:640px;margin:0 auto;padding:40px 28px 60px}
-h1{font-size:40px;line-height:1.15;margin-bottom:8px}
-.sub{font-size:15px;color:var(--muted);margin-bottom:24px;line-height:1.55}
-.today{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 26px;box-shadow:0 4px 24px rgba(0,0,0,.04);margin-bottom:14px}
-.today .d{font-size:12px;color:var(--faint);letter-spacing:.5px;margin-bottom:10px}
-.today ul{list-style:none}
-.today li{font-size:15.5px;line-height:1.6;padding:9px 0 9px 26px;position:relative;border-bottom:1px solid #f0ede8}
-.today li:last-child{border:none}
-.today li::before{content:'';position:absolute;left:4px;top:17px;width:7px;height:7px;border-radius:50%;background:#c9c4bc}
-.today li.hot::before{background:var(--hot)}
-.today li b{font-weight:600}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-@media(max-width:560px){.actions{grid-template-columns:1fr}h1{font-size:30px}}
-.act{display:block;background:var(--dark);color:#faf9f7;border-radius:12px;padding:20px 22px;text-decoration:none}
-.act.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.top nav a,.top nav button{font-size:13px;color:var(--muted);padding:7px 14px;border-radius:99px;border:1px solid transparent;background:transparent;text-decoration:none;cursor:pointer}
+.top nav a.cur{background:var(--glass);color:#fff;border-color:var(--glass-line)}
+.top nav button{border-color:var(--glass-line);color:var(--ink);background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.wrap{max-width:720px;margin:0 auto;padding:60px 28px;text-align:center}
+h1{font-size:48px;line-height:1.08;margin-bottom:12px}
+h1 .grn{color:var(--green)}
+.sub{font-size:16px;color:var(--muted);margin-bottom:22px}
+.code{max-width:560px;margin:0 auto 26px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;text-align:left;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:13px;line-height:1.7;color:var(--muted)}
+.code .k{color:var(--green)}.code .s{color:#f2c94c}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left}
+@media(max-width:560px){.cards{grid-template-columns:1fr}h1{font-size:32px}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.stat .n{font-size:32px;font-weight:700}
+.stat .n.g{color:var(--green)}
+.stat p{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.act{display:block;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:12px;padding:22px;text-decoration:none;color:var(--ink)}
+.act.ghost{background:transparent}
 .act h2{font-size:16px;margin-bottom:5px}
-.act p{font-size:13px;opacity:.65;line-height:1.5}
+.act p{font-size:13px;color:var(--muted);line-height:1.5}
 .err{font-size:13px;color:var(--muted)}
 </style>
 </head>
@@ -43,14 +42,12 @@ h1{font-size:40px;line-height:1.15;margin-bottom:8px}
   </div>
 </div>
 <div class="wrap">
-  <h1>Catat hari ini,<br>pantau semuanya.</h1>
+  <h1>Input sekali.<br><span class="grn">Terpantau semua.</span></h1>
   <p class="sub" id="dateLine">Memuat ringkasan layanan …</p>
-  <div class="today" id="todayCard" style="display:none">
-    <div class="d" id="todayD">RINGKASAN</div>
-    <ul id="todayList"></ul>
-  </div>
+  <div class="code" id="codeCard" style="display:none"></div>
   <p class="err" id="err" style="display:none">Data monitoring tidak terbaca. Cek koneksi atau deployment GAS, lalu muat ulang.</p>
-  <div class="actions">
+  <div class="cards" style="margin-bottom:14px" id="statCards"></div>
+  <div class="cards">
     <a class="act" href="index.html"><h2>Input transkrip &rarr;</h2><p>Tempel WA, AI ekstrak 53 kolom, periksa, simpan.</p></a>
     <a class="act ghost" href="monitoring.html"><h2>Lihat monitoring &rarr;</h2><p>Grafik, tren, dan register layanan.</p></a>
   </div>
@@ -71,15 +68,13 @@ function render(rows){
   const adu=rows.filter(r=>(r['Jenis Layanan']||'').toLowerCase()==='pengaduan');
   const freq={};rows.forEach(r=>{const k=r['Komoditas']||'Lainnya';freq[k]=(freq[k]||0)+1;});
   const top=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0]||['–',0];
-  const items=[];
-  if(adu.length)items.push(['hot','<b>'+adu.length+' pengaduan</b> menunggu tindak lanjut dari total '+rows.length+' layanan']);
-  items.push(['','<b>'+thisMonth.length+' layanan</b> tercatat pada '+bulan[now.getMonth()]+' '+now.getFullYear()]);
-  items.push(['','Komoditas tersering: <b>'+top[0]+' ('+top[1]+')</b>']);
-  document.getElementById('todayD').textContent=now.getDate()+' '+bulan[now.getMonth()].toUpperCase()+' '+now.getFullYear()+' — '+rows.length+' LAYANAN TERCATAT';
-  const ul=document.getElementById('todayList');ul.innerHTML='';
-  items.forEach(([cls,html])=>{const li=document.createElement('li');if(cls)li.className=cls;li.innerHTML=html;ul.appendChild(li);});
-  fetch(GAS_URL+'?action=quota').then(r=>r.json()).then(j=>{if(j.ok){const li=document.createElement('li');li.innerHTML='Kuota AI tersisa <b>'+j.quota.rpdLeft+' dari '+j.quota.rpdLimit+'</b> hari ini';ul.appendChild(li);}}).catch(()=>{});
-  document.getElementById('todayCard').style.display='block';
+  document.getElementById('codeCard').innerHTML='{<br>&nbsp;&nbsp;<span class="k">"layanan"</span>: <span class="s">'+rows.length+'</span>,&nbsp;&nbsp;<span class="k">"bulan_ini"</span>: <span class="s">'+thisMonth.length+'</span>,<br>&nbsp;&nbsp;<span class="k">"pengaduan"</span>: <span class="s">'+adu.length+'</span>,&nbsp;&nbsp;<span class="k">"tersering"</span>: <span class="s">"'+top[0]+'"</span><br>}';
+  document.getElementById('codeCard').style.display='block';
+  document.getElementById('statCards').innerHTML=
+    '<div class="stat"><div class="n">'+rows.length+'</div><p>Total layanan</p></div>'+
+    '<div class="stat"><div class="n g">'+thisMonth.length+'</div><p>Bulan '+bulan[now.getMonth()]+'</p></div>'+
+    '<div class="stat"><div class="n">'+adu.length+'</div><p>Pengaduan aktif</p></div>'+
+    '<div class="stat"><div class="n">'+top[0]+'</div><p>Tersering ('+top[1]+')</p></div>';
 }
 </script>
 </body>

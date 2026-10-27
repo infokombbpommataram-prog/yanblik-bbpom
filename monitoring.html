@@ -17,10 +17,10 @@
 
   <style>
     th[data-sort]:not([data-sort=""]){cursor:pointer;user-select:none;white-space:nowrap}
-    th[data-sort]:not([data-sort=""]):hover{color:#2b2a28}
-    .sort-ind{font-size:10px;color:#a09d98}
-    #dbOverlay{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:rgba(250,249,247,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-    #dbOverlay .box{background:#fff;border:1px solid #e8e4de;border-radius:14px;padding:26px 32px;box-shadow:0 4px 24px rgba(0,0,0,.08);font-size:15px;color:#2b2a28}
+    th[data-sort]:not([data-sort=""]):hover{color:#3ecf8e}
+    .sort-ind{font-size:10px;color:#52525b}
+    #dbOverlay{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:rgba(10,10,10,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+    #dbOverlay .box{background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:12px;padding:26px 32px;box-shadow:none;font-size:15px;color:#fff}
     #dbOverlay.hide{display:none}
     .glass-card {
       background: rgba(255, 255, 255, 0.9);
@@ -66,10 +66,10 @@
     <a class="brand" href="home.html"><img src="logo.jpeg" alt="Logo Yanblik">Yanblik</a>
     <div class="links"><a href="home.html">Beranda</a><a href="index.html">Input</a><a class="cur" href="monitoring.html">Monitoring</a><button onclick="logout()">Keluar</button></div>
   </div>
-  <div class="r-wrap" style="padding-bottom:6px">
-    <h1 style="font-size:34px">Monitoring layanan.</h1>
-    <p class="ui" style="font-size:15px;color:#6b6966;margin-top:6px">Tren, proporsi, dan register lengkap dari data terbaru.</p>
-    <p class="ui" style="font-size:13px;color:#a09d98;margin-top:8px"><span id="statusText">Menghubungkan data…</span></p>
+  <div class="r-wrap" style="padding-bottom:6px;max-width:1120px">
+    <h1 style="font-size:44px">Monitoring layanan.</h1>
+    <p class="ui" style="font-size:16px;color:#a1a1aa;margin-top:10px">Tren, proporsi, dan register lengkap dari data terbaru.</p>
+    <p class="ui" style="font-size:13px;color:#52525b;margin-top:8px"><span id="statusText">Menghubungkan data…</span></p>
   </div>
 
   <main class="container mx-auto px-4 md:px-6 py-6 space-y-6">
