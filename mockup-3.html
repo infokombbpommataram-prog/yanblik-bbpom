@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup 3 — Studio Floating</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;min-height:100vh;color:#f5f5f7;background:radial-gradient(1000px 500px at 20% -5%,#2b1a4d 0%,transparent 60%),radial-gradient(900px 500px at 85% 10%,#0e3a5d 0%,transparent 60%),#0b0b0f}
+.nav{position:sticky;top:14px;z-index:10;max-width:640px;margin:14px auto 0;background:rgba(28,28,32,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:10px 12px;display:flex;justify-content:center;gap:4px;font-size:13px}
+.nav a{color:#c7c7cc;text-decoration:none;padding:7px 16px;border-radius:99px}
+.nav a.cur{background:rgba(255,255,255,.14);color:#fff}
+.wrap{max-width:880px;margin:0 auto;padding:60px 24px 60px;text-align:center}
+.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#a1a1a6}
+h1{font-size:46px;font-weight:700;letter-spacing:-1.5px;margin:14px 0 10px}
+h1 .grad{background:linear-gradient(90deg,#ff9a3d,#ff5e7e,#a06bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:16px;color:#a1a1a6}
+.grid{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:left}
+@media(max-width:640px){.grid{grid-template-columns:1fr}h1{font-size:32px}}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:26px;transition:transform .18s ease,border-color .18s ease;position:relative;overflow:hidden}
+.card:hover{transform:scale(1.01);border-color:rgba(255,255,255,.25)}
+.card h2{font-size:19px;margin-bottom:8px}
+.card p{font-size:14px;color:#a1a1a6;line-height:1.6}
+.card .go{display:inline-block;margin-top:14px;font-size:14px;font-weight:600;color:#ff9a3d;text-decoration:none}
+.spot{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:22px 26px;margin-top:16px;font-size:14px;line-height:1.65;color:#d7d7dc}
+.spot b{color:#fff}
+.foot{font-size:12px;color:#6e6e73;padding-bottom:30px;text-align:center}
+@media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="nav"><a class="cur" href="../home.html">Beranda</a><a href="../home.html">Input</a><a href="../home.html">Monitoring</a></div>
+<div class="wrap">
+  <div class="eyebrow">BBPOM di Mataram &middot; Yanblik</div>
+  <h1>Semua layanan, <span class="grad">dalam jangkauan.</span></h1>
+  <p class="sub">393 layanan tercatat &middot; kuota AI 17/20 hari ini</p>
+  <div class="spot"><b>14 layanan</b> bulan Oktober, <b>4 pengaduan</b> perlu tindak lanjut. Tersering: <b>Kosmetik</b>. Arus normal — lanjutkan pencatatan.</div>
+  <div class="grid">
+    <div class="card"><h2>Input transkrip</h2><p>Tempel WA, AI ekstrak 53 kolom, periksa, simpan. Lewati AI bila kuota habis.</p><a class="go" href="../home.html">Buka input →</a></div>
+    <div class="card"><h2>Monitoring</h2><p>Tren, proporsi, register lengkap dengan filter dan pencarian.</p><a class="go" href="../home.html">Buka dashboard →</a></div>
+  </div>
+</div>
+<div class="foot">Mockup 3 — Studio Floating &middot; 50/50 &middot; <a href="../home.html" style="color:#ff9a3d">kembali</a></div>
+</body>
+</html>
