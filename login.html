@@ -26,11 +26,11 @@ body{font-family:'Segoe UI',Roboto,sans-serif;background:#f4f6f9;display:flex;al
 function doLogin(){
   if(document.getElementById('u').value==='Admin'&&document.getElementById('p').value==='adaptif2025'){
     sessionStorage.setItem('yanblik_auth','1');
-    location.replace('index.html');
+    location.replace('home.html');
   } else document.getElementById('err').classList.remove('d-none');
 }
 document.getElementById('p').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-if(sessionStorage.getItem('yanblik_auth')==='1')location.replace('index.html');
+if(sessionStorage.getItem('yanblik_auth')==='1')location.replace('home.html');
 </script>
 </body>
 </html>
