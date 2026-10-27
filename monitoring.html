@@ -327,6 +327,10 @@
           <h4 class="text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center gap-1">
             Profil Demografi (Anonim)
           </h4>
+          <div class="bg-gray-50 p-2 rounded-lg flex justify-between items-center mb-2 text-[11px]">
+            <span class="text-gray-400">No. HP:</span>
+            <a id="modalWa" href="#" target="_blank" rel="noopener" class="font-semibold text-blue-700 underline truncate max-w-[180px]"></a>
+          </div>
           <div class="grid grid-cols-2 gap-2 text-[11px]">
             <div class="bg-gray-50 p-2 rounded-lg flex justify-between">
               <span class="text-gray-400">Pekerjaan:</span>
@@ -349,7 +353,8 @@
 
       </div>
 
-      <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex justify-end flex-shrink-0">
+      <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex justify-between flex-shrink-0">
+        <a id="modalWaBtn" href="#" target="_blank" rel="noopener" class="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-1.5 rounded-xl text-xs transition">Hubungi via WA</a>
         <button onclick="tutupModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-1.5 rounded-xl text-xs transition focus:outline-none">
           Tutup
         </button>
@@ -533,17 +538,12 @@
       renderTabel();
     }
 
-    function formatTanggalIndo(tglStr) {
+    // ponytail: tampil selalu yyyy/MM/dd; sort/filter tetap string mentah yyyy-MM-dd dari GAS.
+    function formatTanggal(tglStr) {
       if (!tglStr) return "-";
-      const parts = tglStr.split("-");
-      if (parts.length !== 3) return tglStr;
-      
-      const bulanIndo = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-      ];
-      
-      return parseInt(parts[2], 10) + " " + (bulanIndo[parseInt(parts[1], 10) - 1] || "") + " " + parts[0];
+      const m = String(tglStr).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return m[1] + "/" + m[2] + "/" + m[3];
+      return tglStr;
     }
 
     function terapkanSort() {
@@ -551,7 +551,7 @@
       if (!sortKey) return;
       const th = document.querySelector('th[data-sort="' + sortKey + '"] .sort-ind');
       if (th) th.textContent = sortDir === 1 ? ' ▲' : ' ▼';
-      // ponytail: sort string biasa. Tanggal format yyyy-MM-dd jadi urut benar tanpa parse.
+      // ponytail: sort string biasa. Tanggal mentah yyyy-MM-dd urut benar; tampil yyyy/MM/dd.
       dataFilter.sort(function(a, b) {
         const va = (a[sortKey] || '').toString().toLowerCase();
         const vb = (b[sortKey] || '').toString().toLowerCase();
@@ -594,7 +594,7 @@
 
         tr.innerHTML = `
           <td class="px-4 py-3 font-semibold text-gray-500">${realDataIdx + 1}</td>
-          <td class="px-4 py-3 whitespace-nowrap text-gray-700 font-medium">${formatTanggalIndo(item["Tgl Layanan"])}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-700 font-medium">${formatTanggal(item["Tgl Layanan"])}</td>
           <td class="px-4 py-3 whitespace-nowrap">
             <span class="px-2 py-0.5 rounded text-xxs font-bold uppercase ${
               (item["Jenis Layanan"] || '').toLowerCase() === 'informasi' 
@@ -638,7 +638,7 @@
       if (!item) return;
 
       document.getElementById("modalRegId").innerText = item["Reg Id"] || `LOG/ID/#${indexFilter + 1}`;
-      document.getElementById("modalTglLayanan").innerText = formatTanggalIndo(item["Tgl Layanan"]);
+      document.getElementById("modalTglLayanan").innerText = formatTanggal(item["Tgl Layanan"]);
       document.getElementById("modalKomoditas").innerText = item["Komoditas"] || "-";
       document.getElementById("modalKlasifikasi").innerText = item["Klasifikasi"] || "-";
       document.getElementById("modalSubklasifikasi").innerText = item["Subklasifikasi"] || "-";
@@ -647,6 +647,22 @@
       document.getElementById("modalPekerjaan").innerText = item["Pekerjaan"] || "-";
       document.getElementById("modalSarana").innerText = item["Sarana"] || "-";
       document.getElementById("modalAlamat").innerText = item["Alamat"] || "-";
+
+      // No HP: Sheets simpan teks "'62…" (apostrof). Bersihkan untuk wa.me.
+      const hp = String(item["No HP"] || "").replace(/\D/g, "");
+      const wa = document.getElementById("modalWa");
+      const waBtn = document.getElementById("modalWaBtn");
+      if (hp) {
+        wa.innerText = hp;
+        wa.href = "https://wa.me/" + hp;
+        waBtn.href = "https://wa.me/" + hp;
+        waBtn.style.display = "";
+        wa.style.display = "";
+      } else {
+        wa.innerText = "-";
+        wa.removeAttribute("href");
+        waBtn.style.display = "none";
+      }
       
       const genderText = item["Jenis Kelamin"] === "L" ? "Laki-laki" : item["Jenis Kelamin"] === "P" ? "Perempuan" : "-";
       document.getElementById("modalGender").innerText = genderText;

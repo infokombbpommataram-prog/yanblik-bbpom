@@ -67,6 +67,8 @@ function showManualForm(){
 async function submitToSheet(){
   const formData = {};
   FIELDS.forEach(f => { const el = document.getElementById(f); formData[f] = el ? el.value : ''; });
+  // input date HTML selalu ISO; kirim slash agar seragam dengan Sheets.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(formData.tglLayanan || '')) formData.tglLayanan = formData.tglLayanan.replace(/-/g, '/');
   showLoading("Sedang menyimpan data ke sheet 'Lembar Kerja'...");
   try {
     const j = await gasPost({ action:'save', formData });
