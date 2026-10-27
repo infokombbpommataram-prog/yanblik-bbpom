@@ -1,38 +1,43 @@
-/* Yanblik — tema Supabase gelap + glass tipis. Kaca hanya di tombol/nav, bukan panel data. */
+/* Yanblik — tema Apple: terang, SF, spasi lega, kartu putih lembut. */
 :root{
-  --bg:#0a0a0a; --panel:#111111; --card:#141414;
-  --ink:#ededed; --muted:#a1a1aa; --faint:#52525b;
-  --line:#262626; --green:#3ecf8e; --dark-green:#0c2b1d;
-  --glass:rgba(255,255,255,.06);
-  --glass-line:rgba(255,255,255,.12);
+  --bg:#fbfbfd; --panel:#f5f5f7; --card:#ffffff;
+  --ink:#1d1d1f; --muted:#6e6e73; --faint:#aeaeb2;
+  --line:#d2d2d7; --blue:#0066cc; --green:#1d8127;
+  --glass:rgba(255,255,255,.72);
+  --glass-line:rgba(0,0,0,.08);
 }
 *{box-sizing:border-box}
-body{background:var(--bg)!important;color:var(--ink)!important}
-h1,h2,h3,.serif{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif!important;font-weight:700!important;letter-spacing:-1px}
-.ui,.top nav,.r-nav,button,input,select,textarea,label,.metric-l,.sub,.err,.foot{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-/* Navigasi kaca */
-.r-nav{max-width:1024px;margin:14px auto 0;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-line);border-radius:99px}
-.r-nav .brand{font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;padding-left:8px}
+body{background:var(--bg)!important;color:var(--ink)!important;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.serif{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif!important;font-weight:700!important;letter-spacing:-.02em}
+.ui,.top nav,.r-nav,button,input,select,textarea,label,.metric-l,.sub,.err,.foot{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,sans-serif}
+/* Navigasi */
+.r-nav{max-width:1024px;margin:0 auto;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.r-nav .brand{font-size:17px;font-weight:700;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
 .r-nav .brand img{width:28px;height:28px;border-radius:8px;object-fit:cover}
-.r-nav .links{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
-.r-nav .links a,.r-nav .links button{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:99px;border:1px solid transparent;background:transparent;cursor:pointer}
-.r-nav .links a.cur{background:var(--glass);color:#fff;border-color:var(--glass-line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-.r-nav .links button{border-color:var(--glass-line);color:var(--ink);background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-.r-wrap{max-width:860px;margin:0 auto;padding:28px 28px 60px}
-/* Tombol kaca hijau */
-.btn-dark,.btn-primary,.btn-success{background:var(--glass)!important;border:1px solid var(--glass-line)!important;color:#fff!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important}
-.btn-dark:hover,.btn-primary:hover,.btn-success:hover{border-color:var(--green)!important}
-.btn-line,.btn-outline-secondary{background:transparent!important;border:1px solid var(--line)!important;color:var(--ink)!important}
+.r-nav .links{display:flex;gap:2px;align-items:center;flex-wrap:wrap}
+.r-nav .links a,.r-nav .links button{font-size:14px;color:var(--ink);text-decoration:none;padding:8px 14px;border-radius:8px;border:none;background:transparent;cursor:pointer;opacity:.8}
+.r-nav .links a.cur{opacity:1;font-weight:600}
+.r-nav .links a:hover,.r-nav .links button:hover{background:var(--panel);opacity:1}
+.r-wrap{max-width:980px;margin:0 auto;padding:24px 28px 60px}
+/* Tombol */
+.btn-dark,.btn-primary,.btn-success{background:var(--blue)!important;border:none!important;color:#fff!important;border-radius:10px!important}
+.btn-line,.btn-outline-secondary{background:var(--panel)!important;border:none!important;color:var(--blue)!important;border-radius:10px!important}
 /* Kartu */
-.card{background:var(--card)!important;border:1px solid var(--line)!important;box-shadow:none!important;border-radius:12px!important;color:var(--ink)!important}
-.section-header{color:var(--ink)!important;border-color:var(--line)!important;font-size:15px!important}
-.form-label{color:var(--muted)!important;font-size:12px!important}
-.form-control,.form-select{background:#0d0d0d!important;border-color:var(--line)!important;color:var(--ink)!important}
-.form-control:focus,.form-select:focus{border-color:var(--green)!important;box-shadow:none!important;color:var(--ink)!important}
-.alert-light{background:var(--panel)!important;border-color:var(--line)!important;color:var(--muted)!important}
+.card{background:var(--card)!important;border:none!important;box-shadow:0 4px 24px rgba(0,0,0,.06)!important;border-radius:18px!important;color:var(--ink)!important}
+.section-header{color:var(--ink)!important;border:none!important;font-size:19px!important}
+.form-label{color:var(--ink)!important;font-size:13px!important;font-weight:600!important}
+.form-control,.form-select{background:#fff!important;border:1px solid var(--line)!important;color:var(--ink)!important;border-radius:10px!important}
+.form-control:focus,.form-select:focus{border-color:var(--blue)!important;box-shadow:0 0 0 4px rgba(0,102,204,.15)!important;color:var(--ink)!important}
+.alert-light{background:var(--panel)!important;border:none!important;color:var(--muted)!important;border-radius:12px!important}
 /* Override Tailwind monitoring */
-.glass-card{background:var(--card)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+.glass-card{background:#fff!important;border:none!important;box-shadow:0 4px 24px rgba(0,0,0,.06)!important;border-radius:18px!important}
 header.bg-gradient-to-r{background:var(--bg)!important}
 thead.bg-gray-50{background:var(--panel)!important}
-tbody.bg-white{background:var(--card)!important}
+tbody.bg-white{background:#fff!important}
+th[data-sort]:not([data-sort=""]){cursor:pointer;user-select:none;white-space:nowrap}
+th[data-sort]:not([data-sort=""]):hover{color:var(--blue)}
+.sort-ind{font-size:10px;color:var(--faint)}
+#dbOverlay{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:rgba(251,251,253,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#dbOverlay .box{background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:14px;padding:24px 32px;box-shadow:0 8px 32px rgba(0,0,0,.1);font-size:15px;color:var(--ink)}
+#dbOverlay.hide{display:none}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}

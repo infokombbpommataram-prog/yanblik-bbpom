@@ -9,21 +9,21 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .box{max-width:380px;width:100%;text-align:center}
-h1{font-size:40px;margin:14px 0 8px;letter-spacing:-1.5px}
+h1{font-size:40px;margin:14px 0 8px;letter-spacing:-.03em}
 .logo{width:72px;height:72px;border-radius:18px;object-fit:cover}
 p{font-size:15px;color:var(--muted);margin-bottom:28px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px;box-shadow:none;text-align:left}
-label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:0 0 5px;font-family:-apple-system,'Segoe UI',sans-serif}
-input{width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:14px;background:#0d0d0d;color:var(--ink)}
-input:focus{outline:none;border-color:var(--green)}
-button{width:100%;font-size:15px;font-weight:600;padding:11px;border:1px solid var(--glass-line);border-radius:9px;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#fff;cursor:pointer}
-.err{font-size:13px;color:#f2555a;margin-bottom:12px;display:none}
+.card{background:var(--card);border:none;border-radius:18px;padding:26px;box-shadow:0 4px 24px rgba(0,0,0,.06);text-align:left}
+label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin:0 0 5px;font-family:-apple-system,'Segoe UI',sans-serif}
+input{width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:14px;background:#fff;color:var(--ink)}
+input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,102,204,.15)}
+button{width:100%;font-size:15px;font-weight:600;padding:11px;border:none;border-radius:10px;background:var(--blue);color:#fff;cursor:pointer}
+.err{font-size:13px;color:#c00;margin-bottom:12px;display:none}
 </style>
 </head>
 <body>
 <div class="box">
   <img class="logo" src="logo.jpeg" alt="Logo Yanblik">
-  <h1>Yanblik<span style="color:var(--green)">.</span></h1>
+  <h1>Yanblik<span style="color:var(--blue)">.</span></h1>
   <p>BBPOM di Mataram — masuk untuk mencatat dan memantau layanan.</p>
   <div class="card">
     <label>Username</label><input id="u" autocomplete="username">
